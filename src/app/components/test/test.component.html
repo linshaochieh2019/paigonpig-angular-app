@@ -1,0 +1,9 @@
+<div style="text-align: center; margin-top: 20px">
+  <h2>Angular Test Component</h2>
+
+  <div *ngIf="authService.currentUser">
+    <p>Welcome, {{ authService.currentUser.email }}</p>
+    <!-- Display other user properties as needed -->
+  </div>
+
+</div>
