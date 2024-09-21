@@ -1,9 +1,19 @@
 <div style="text-align: center; margin-top: 20px">
   <h2>Angular Test Component</h2>
-
-  <div *ngIf="authService.currentUser">
-    <p>Welcome, {{ authService.currentUser.email }}</p>
-    <!-- Display other user properties as needed -->
+  <!-- Show user info if available -->
+  <!-- <div *ngIf="user">
+    <p>User {{ user.uid }}</p>
+  </div> -->
+  
+  <!-- Show when user is logged in -->
+  <div *ngIf="user; else loggedOut">
+    <p>User: {{ user.email }}</p>
+    <p>Role: {{ user.role }}</p>
+    <button (click)="logout()">Logout</button>
   </div>
 
+  <!-- Show when user is logged out -->
+  <ng-template #loggedOut>
+    <p>You are not logged in.</p>
+  </ng-template>
 </div>

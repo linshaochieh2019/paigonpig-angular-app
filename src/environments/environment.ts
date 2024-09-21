@@ -6,7 +6,7 @@ export const environment = {
     projectId: "paigonpig",
     storageBucket: "paigonpig.appspot.com",
     messagingSenderId: "969926028820",
-    appId: "1:969926028820:web:e4e70a3ea6619d4bfcc101"  
+    appId: "1:969926028820:web:e4e70a3ea6619d4bfcc101"
   },
   apiUrl: 'http://localhost:3000' 
 };

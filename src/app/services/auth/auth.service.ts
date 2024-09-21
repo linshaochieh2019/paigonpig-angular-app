@@ -1,79 +1,84 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { environment } from '../../../environments/environment';
-import { switchMap, map, of, catchError, tap } from 'rxjs'
-import { HttpClient } from '@angular/common/http';
-;
-
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { Observable, of, switchMap } from 'rxjs';
+import firebase from 'firebase/compat/app';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  
-  private apiUrl = environment.apiUrl
-  public currentUser: any;
+  user$: Observable<any>;
 
   constructor(
     private afAuth: AngularFireAuth,
-    private http: HttpClient // Inject HttpClient
-  ) {}
-
-  async signUp(email: string, password: string) {
-    const userCredential = await this.afAuth.createUserWithEmailAndPassword(email, password);
-
-    // Add user by calling the API
-    const user = {
-      id: userCredential.user ? userCredential.user.uid : null,
-      email: email
-    };
-
-    // Call the API to add the user
-    const response = await fetch(`${this.apiUrl}/users/create`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(user),
-    });
-
-    // If the API call fails, delete the user from Firebase
-    if (!response.ok) {
-      await userCredential.user?.delete();
-    }
-
-    return userCredential;
+    private router: Router,
+    private firestore: AngularFirestore
+  ) {
+    // Listen to auth state and fetch user data from Firestore
+    this.user$ = this.afAuth.authState.pipe(
+      switchMap(user => {
+        if (user) {
+          // If user is authenticated, fetch user document from Firestore
+          return this.firestore.doc(`users/${user.uid}`).valueChanges();
+        } else {
+          // If no user is logged in, return null
+          return of(null);
+        }
+      })
+    );
   }
 
-  async signIn(email: string, password: string) {
-    return this.afAuth.signInWithEmailAndPassword(email, password);    
+  async signUp(email: string, password: string) {
+    const userCredential = await this.afAuth.createUserWithEmailAndPassword(
+      email,
+      password
+    );
+
+    // Check if the user was created successfully
+    if (userCredential.user) {
+      const user = {
+        id: userCredential.user.uid,
+        email: email,
+        role: 'user',
+      };
+
+      // Add the user to Firestore directly
+      await this.firestore.collection('users').doc(user.id).set(user);
+
+      return userCredential;
+    } else {
+      throw new Error('User creation failed');
+    }
+  }
+
+  // Log in with email and password
+  async signIn(email: string, password: string): Promise<void> {
+    try {
+      await this.afAuth.signInWithEmailAndPassword(email, password);
+      console.log('User logged in successfully');
+    } catch (error) {
+      console.error('Error signing in: ', error);
+    }
   }
 
   async signOut() {
     return this.afAuth.signOut();
   }
 
-  get user$() {
-    return this.afAuth.authState.pipe(
-      switchMap(user => {
-        if (user) {
-          // User is logged in, fetch user data from your backend
-          return this.http.get(`${this.apiUrl}/users/get`, {
-            params: { userId: user.uid }
-          }).pipe(
-            map((userData: any) => ({ ...user, ...userData })), // Combine user data
-            tap(userData => this.currentUser = userData), // Populate currentUser
-            catchError(error => {
-              console.error('Error fetching user data:', error);
-              // Handle the error, e.g., return a default user object or throw an error
-              return of(null); 
-            })
-          );
-        } else {
-          // User is logged out, return null
-          return of(null); 
-        }
-      })
-    );
+  // // Reset password
+  // async resetPassword(email: string): Promise<void> {
+  //   try {
+  //     await this.afAuth.sendPasswordResetEmail(email);
+  //     console.log('Password reset email sent');
+  //   } catch (error) {
+  //     console.error('Error sending password reset email: ', error);
+  //   }
+  // }
+
+  // Get current user
+  getCurrentUser(): Observable<firebase.User | null> {
+    return this.user$;
   }
 }
