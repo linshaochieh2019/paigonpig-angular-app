@@ -1,31 +1,110 @@
-<!-- tasks.component.html -->
+<div class="container mt-5">
+  <!-- Add New Task Form -->
+  <div *ngIf="isAdmin" class="card mb-4">
+    <div class="card-header">
+      <h2>Create New Task</h2>
+    </div>
+    <div class="card-body">
+      <form (ngSubmit)="createTask()">
+        <div class="form-group">
+          <label for="title">Task Title</label>
+          <input
+            type="text"
+            [(ngModel)]="newTask.title"
+            id="title"
+            name="title"
+            class="form-control"
+            placeholder="Task Title"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="description">Task Description</label>
+          <textarea
+            [(ngModel)]="newTask.description"
+            id="description"
+            name="description"
+            class="form-control"
+            placeholder="Task Description"
+          ></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Task</button>
+      </form>
+    </div>
+  </div>
 
-<!-- Add New Task Form -->
-<h2>Create New Task</h2>
-<form (ngSubmit)="createTask()">
-  <input [(ngModel)]="newTask.title" placeholder="Task Title" name="title" required>
-  <textarea [(ngModel)]="newTask.description" placeholder="Task Description" name="description"></textarea>
-  <button type="submit">Add Task</button>
-</form>
+  <!-- Edit Task Form -->
+  <div *ngIf="editTask" class="card mb-4">
+    <div class="card-header">
+      <h2>Edit Task</h2>
+    </div>
+    <div class="card-body">
+      <form (ngSubmit)="updateTask()">
+        <div class="form-group">
+          <label for="editTitle">Task Title</label>
+          <input
+            type="text"
+            [(ngModel)]="editTask.title"
+            id="editTitle"
+            name="editTitle"
+            class="form-control"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="editDescription">Task Description</label>
+          <textarea
+            [(ngModel)]="editTask.description"
+            id="editDescription"
+            name="editDescription"
+            class="form-control"
+          ></textarea>
+        </div>
+        <button type="submit" class="btn btn-success">Save Changes</button>
+        <button
+          type="button"
+          class="btn btn-secondary ml-2"
+          (click)="editTask = null"
+        >
+          Cancel
+        </button>
+      </form>
+    </div>
+  </div>
 
-<!-- Edit Task Form -->
-<div *ngIf="editTask">
-  <h2>Edit Task</h2>
-  <form (ngSubmit)="updateTask()">
-    <input [(ngModel)]="editTask.title" name="editTitle" required>
-    <textarea [(ngModel)]="editTask.description" name="editDescription"></textarea>
-    <button type="submit">Save Changes</button>
-  </form>
-  <button (click)="editTask = null">Cancel</button>
+  <!-- Task List -->
+  <h2>Task List</h2>
+  <ul class="list-group">
+    <li
+      *ngFor="let task of tasks"
+      class="list-group-item d-flex justify-content-between align-items-center"
+    >
+      <div class="form-check">
+        <input
+          type="checkbox"
+          [checked]="task.completed"
+          (change)="toggleCompletion(task)"
+          class="form-check-input"
+          id="task{{ task.id }}"
+        />
+        <label class="form-check-label" for="task{{ task.id }}">
+          <strong>{{ task.title }}</strong> - {{ task.description }}
+        </label>
+      </div>
+      <div>
+        <button
+          class="btn btn-sm btn-warning"
+          (click)="selectTaskForEdit(task)"
+        >
+          Edit
+        </button>
+        <button
+          class="btn btn-sm btn-danger ml-2"
+          (click)="deleteTask(task.id!)"
+        >
+          Delete
+        </button>
+      </div>
+    </li>
+  </ul>
 </div>
-
-<!-- Task List -->
-<h2>Task List</h2>
-<ul>
-  <li *ngFor="let task of tasks">
-    <input type="checkbox" [checked]="task.completed" (change)="toggleCompletion(task)">
-    <strong>{{ task.title }}</strong> - {{ task.description }}
-    <button (click)="selectTaskForEdit(task)">Edit</button>
-    <button (click)="deleteTask(task.id!)">Delete</button>
-  </li>
-</ul>

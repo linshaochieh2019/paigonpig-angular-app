@@ -56,8 +56,10 @@ export class AuthService {
   // Log in with email and password
   async signIn(email: string, password: string): Promise<void> {
     try {
-      await this.afAuth.signInWithEmailAndPassword(email, password);
-      console.log('User logged in successfully');
+      await this.afAuth.signInWithEmailAndPassword(email, password)
+      .then(() => {
+        this.router.navigate(['/tasks']);
+      })
     } catch (error) {
       console.error('Error signing in: ', error);
     }
@@ -78,7 +80,7 @@ export class AuthService {
   // }
 
   // Get current user
-  getCurrentUser(): Observable<firebase.User | null> {
+  getCurrentUser(): Observable<any> {
     return this.user$;
   }
 }
