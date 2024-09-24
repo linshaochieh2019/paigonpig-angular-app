@@ -11,6 +11,8 @@ export interface Task {
   completed?: boolean;
   assignedBy?: string;
   assignee?: string;
+  createdTime?: Date;
+  deadline?: Date;
 }
 
 @Injectable({

@@ -11,8 +11,7 @@ import { AuthService } from '../../services/auth/auth.service';
 export class TasksComponent implements OnInit {
   isAdmin: boolean = false;
   tasks: Task[] = [];
-  newTask: Task = { title: '', description: '', completed: false };
-  editTask: Task | null = null;
+  selectedTask: Task | null = null;
 
   constructor(private tasksService: TasksService, private authService: AuthService) {}
 
@@ -35,29 +34,44 @@ export class TasksComponent implements OnInit {
     });
   }
 
-  // Create a new task
-  createTask(): void {
-    if (this.newTask.title?.trim()) {
-      this.tasksService.createTask(this.newTask).then(() => {
-        this.newTask = { title: '', description: '', completed: false }; // Reset the form
-      });
+  // // Create a new task
+  // createTask(): void {
+  //   if (this.newTask.title?.trim()) {
+  //     this.tasksService.createTask(this.newTask).then(() => {
+  //       this.newTask = { title: '', description: '', completed: false }; // Reset the form
+  //     });
+  //   }
+  // }
+
+  // // Edit an existing task
+  // selectTaskForEdit(task: Task): void {
+  //   this.editTask = { ...task }; // Make a copy of the task to edit
+  // }
+
+  // // Update the selected task
+  // updateTask(): void {
+  //   if (this.editTask && this.editTask.id) {
+  //     this.tasksService.updateTask(this.editTask.id, this.editTask).then(() => {
+  //       this.editTask = null; // Clear the edit form
+  //     });
+  //   }
+  // }
+
+  editTask(task: Task) {
+    this.selectedTask = task; // Set the selected task for editing
+  }
+
+  onTaskUpdated(updatedTask: Task): void {
+    // Handle the updated task from edit-task.component
+    // 1. Find the task in the `tasks` array
+    const index = this.tasks.findIndex(t => t.id === updatedTask.id);
+    if (index !== -1) {
+      // 2. Update the task in the array
+      this.tasks[index] = updatedTask; 
+      // 3. Optionally, clear the selectedTask
+      this.selectedTask = null; 
     }
   }
-
-  // Edit an existing task
-  selectTaskForEdit(task: Task): void {
-    this.editTask = { ...task }; // Make a copy of the task to edit
-  }
-
-  // Update the selected task
-  updateTask(): void {
-    if (this.editTask && this.editTask.id) {
-      this.tasksService.updateTask(this.editTask.id, this.editTask).then(() => {
-        this.editTask = null; // Clear the edit form
-      });
-    }
-  }
-
   // Delete a task
   deleteTask(id: string): void {
     this.tasksService.deleteTask(id);

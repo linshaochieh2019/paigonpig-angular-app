@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms'; 
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'; 
 import { RouterModule, Routes } from '@angular/router';
 
 // App Components
@@ -12,6 +12,8 @@ import { SignupComponent } from './components/auth/signup/signup.component';
 import { TasksComponent } from './components/tasks/tasks.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { LogoutComponent } from './components/auth/logout/logout.component';
+import { AssignTaskComponent } from './components/tasks/assign-task/assign-task.component';
+import { EditTaskComponent } from './components/tasks/edit-task/edit-task.component';
 
 // For Firebase modules
 import { environment } from '../environments/environment';
@@ -38,12 +40,15 @@ const routes: Routes = [
     SignupComponent,
     TasksComponent,
     NavbarComponent,
-    LogoutComponent
+    LogoutComponent,
+    AssignTaskComponent,
+    EditTaskComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     FormsModule,
+    ReactiveFormsModule,
     RouterModule.forRoot(routes),
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,

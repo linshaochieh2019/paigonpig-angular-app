@@ -1,0 +1,39 @@
+<form [formGroup]="editTaskForm" (ngSubmit)="onSubmit()">
+  <div>
+    <label for="title">Task Title:</label>
+    <input id="title" formControlName="title" placeholder="Edit task title" />
+  </div>
+
+  <div>
+    <label for="description">Description:</label>
+    <textarea id="description" formControlName="description"></textarea>
+  </div>
+
+  <div>
+    <label for="assigneeSearch">Search Assignee:</label>
+    <input
+      id="assigneeSearch"
+      type="text"
+      formControlName="assigneeSearch"
+      placeholder="Search users..."
+      (input)="filterUsers($event)"
+    />
+  </div>
+
+  <ul *ngIf="filteredUsers.length > 0">
+    <li *ngFor="let user of filteredUsers" (click)="selectAssignee(user)">
+      {{ user.name }}
+    </li>
+  </ul>
+
+  <div *ngIf="selectedAssignee">
+    <p>Selected Assignee: {{ selectedAssignee.name }}</p>
+  </div>
+
+  <div>
+    <label for="deadline">Deadline:</label>
+    <input type="date" id="deadline" formControlName="deadline" />
+  </div>
+
+  <button type="submit" [disabled]="editTaskForm.invalid">Save Changes</button>
+</form>
