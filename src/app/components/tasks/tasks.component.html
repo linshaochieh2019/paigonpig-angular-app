@@ -1,84 +1,35 @@
 <div class="container mt-5">
-  <div *ngIf="isAdmin" class="card mb-4">
-    <app-assign-task></app-assign-task>
-  </div>
-
-  <!-- Edit Task Form
-  <div *ngIf="editTask" class="card mb-4">
-    <div class="card-header">
-      <h2>Edit Task</h2>
-    </div>
-    <div class="card-body">
-      <form (ngSubmit)="updateTask()">
-        <div class="form-group">
-          <label for="editTitle">Task Title</label>
-          <input
-            type="text"
-            [(ngModel)]="editTask.title"
-            id="editTitle"
-            name="editTitle"
-            class="form-control"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <label for="editDescription">Task Description</label>
-          <textarea
-            [(ngModel)]="editTask.description"
-            id="editDescription"
-            name="editDescription"
-            class="form-control"
-          ></textarea>
-        </div>
-        <button type="submit" class="btn btn-success">Save Changes</button>
-        <button
-          type="button"
-          class="btn btn-secondary ml-2"
-          (click)="editTask = null"
-        >
-          Cancel
-        </button>
-      </form>
-    </div>
-  </div> -->
-
-  <!-- Task List -->
   <h2>Task List</h2>
-  <ul class="list-group">
-    <li
-      *ngFor="let task of tasks"
-      class="list-group-item d-flex justify-content-between align-items-center"
-    >
-      <div class="form-check">
-        <input
-          type="checkbox"
-          [checked]="task.completed"
-          (change)="toggleCompletion(task)"
-          class="form-check-input"
-          id="task{{ task.id }}"
-        />
-        <label class="form-check-label" for="task{{ task.id }}">
-          <strong>{{ task.title }}</strong> - {{ task.description }}
-        </label>
-      </div>
-      <div>
-        <button class="btn btn-sm btn-warning" (click)="editTask(task)">
-          Edit
-        </button>
-        <button
-          class="btn btn-sm btn-danger ml-2"
-          (click)="deleteTask(task.id!)"
+  <div class="row">
+    <!-- Left Column: Task List -->
+    <div class="col-md-5">
+      <ul class="list-group">
+        <li
+          *ngFor="let task of tasks"
+          class="list-group-item d-flex justify-content-between align-items-center"
+          (click)="selectTask(task)"
+          [class.active]="task === selectedTask"
         >
-          Delete
-        </button>
-      </div>
-    </li>
-  </ul>
-</div>
+          <div>
+            {{ task.title }}
+          </div>
+        </li>
+      </ul>
+    </div>
 
-<!-- Edit Task Component (Dynamically displayed) -->
-<app-edit-task
-  *ngIf="selectedTask"
-  [task]="selectedTask"
-  (taskUpdated)="onTaskUpdated($event)"
-></app-edit-task>
+    <!-- Right Column: Task Details -->
+    <div class="col-md-7">
+      <app-task
+        *ngIf="selectedTask"
+        [task]="selectedTask"
+        (taskDeleted)="onTaskDeleted($event)"
+        (toEditTask)="onEditTask($event)"
+      ></app-task>
+      <app-edit-task
+        *ngIf="isEditingTask && selectedTask"
+        [task]="selectedTask"
+        (taskUpdated)="onTaskUpdated($event)"
+      ></app-edit-task>
+    </div>
+  </div>
+</div>

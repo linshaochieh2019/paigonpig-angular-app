@@ -11,8 +11,8 @@ export interface Task {
   completed?: boolean;
   assignedBy?: string;
   assignee?: string;
-  createdTime?: Date;
-  deadline?: Date;
+  createdTime?: string;
+  deadline?: string;
 }
 
 @Injectable({
@@ -46,7 +46,7 @@ export class TasksService {
     return this.tasksCollection.doc(id).update(task);
   }
 
-  // Delete a task by ID
+  // Delete a task by ID and redirect to tasks list
   deleteTask(id: string): Promise<void> {
     return this.tasksCollection.doc(id).delete();
   }

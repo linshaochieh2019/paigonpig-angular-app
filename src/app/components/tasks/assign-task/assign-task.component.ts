@@ -3,6 +3,7 @@ import { AuthService } from '../../../services/auth/auth.service';
 import { UserService } from '../../../services/user/user.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TasksService, Task } from '../../../services/tasks/tasks.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-assign-task',
@@ -21,7 +22,8 @@ export class AssignTaskComponent implements OnInit {
     private userService: UserService,
     private authService: AuthService,
     private tasksService: TasksService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private router: Router
   ) {
     this.assignTaskForm = this.fb.group({
       title: ['', Validators.required],
@@ -66,9 +68,15 @@ export class AssignTaskComponent implements OnInit {
 
   // Submit the task
   onSubmit() {
-    if (this.assignTaskForm.valid) {
-      console.log(this.assignTaskForm.value);
+    if (this.assignTaskForm.valid && this.selectedAssignee) {
       this.createTask();
+      this.router.navigate(['/tasks']);
+
+    } else if (this.selectedAssignee === null) {
+      alert('Please select an assignee');
+    }
+    else {
+      console.log('Form is invalid');
     }
   }
 
@@ -79,10 +87,13 @@ export class AssignTaskComponent implements OnInit {
     this.newTask.description = this.assignTaskForm.value.description;
     this.newTask.assignee = this.selectedAssignee.id;
     this.newTask.assignedBy = this.currentUserId!;
-    this.newTask.createdTime = new Date();
-    this.newTask.deadline = new Date(this.assignTaskForm.value.deadline);
 
-    console.log(this.newTask);
+    // new Date() but convert to string to storing
+    let currentDate = new Date();
+    this.newTask.createdTime = currentDate.toISOString();
+
+    let deadlineDate = new Date(this.assignTaskForm.value.deadline);
+    this.newTask.deadline = deadlineDate.toISOString();
 
     // Create the task
     if (this.newTask.title?.trim()) {

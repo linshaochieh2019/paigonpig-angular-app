@@ -51,9 +51,6 @@ export class EditTaskComponent implements OnInit {
       this.selectedAssignee = user || null;
     });
 
-    console.log(this.task);
-    console.log(this.users)
-
     // If you have a task input, patch the form with its values
     if (this.task) {
       this.editTaskForm.patchValue({
@@ -84,16 +81,17 @@ export class EditTaskComponent implements OnInit {
   // Submit the edited task
   onSubmit(): void {
     if (this.editTaskForm.valid && this.selectedAssignee) {
+
+      // Convert datetime to string before storing
+      let deadlineDate = new Date(this.editTaskForm.value.deadline).toISOString();
+
       const updatedTask: Task = {
         ...this.existingTask,
         title: this.editTaskForm.value.title,
         description: this.editTaskForm.value.description,
-        deadline: new Date(this.editTaskForm.value.deadline),
+        deadline: deadlineDate,            
         assignee: this.selectedAssignee.id
       };
-
-      console.log(updatedTask);
-
       this.tasksService.updateTask(this.task?.id!, updatedTask).then(() => {
         this.taskUpdated.emit(updatedTask); 
       });

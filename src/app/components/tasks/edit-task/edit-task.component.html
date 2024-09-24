@@ -1,39 +1,71 @@
-<form [formGroup]="editTaskForm" (ngSubmit)="onSubmit()">
-  <div>
-    <label for="title">Task Title:</label>
-    <input id="title" formControlName="title" placeholder="Edit task title" />
-  </div>
-
-  <div>
-    <label for="description">Description:</label>
-    <textarea id="description" formControlName="description"></textarea>
-  </div>
-
-  <div>
-    <label for="assigneeSearch">Search Assignee:</label>
-    <input
-      id="assigneeSearch"
-      type="text"
-      formControlName="assigneeSearch"
-      placeholder="Search users..."
-      (input)="filterUsers($event)"
-    />
-  </div>
-
-  <ul *ngIf="filteredUsers.length > 0">
-    <li *ngFor="let user of filteredUsers" (click)="selectAssignee(user)">
-      {{ user.name }}
-    </li>
-  </ul>
-
-  <div *ngIf="selectedAssignee">
-    <p>Selected Assignee: {{ selectedAssignee.name }}</p>
-  </div>
-
-  <div>
-    <label for="deadline">Deadline:</label>
-    <input type="date" id="deadline" formControlName="deadline" />
-  </div>
-
-  <button type="submit" [disabled]="editTaskForm.invalid">Save Changes</button>
-</form>
+<div class="card">
+  <form
+    [formGroup]="editTaskForm"
+    (ngSubmit)="onSubmit()"
+  >
+    <div class="card-header">
+      <h2>Edit Task</h2>
+    </div>
+    <div class="card-body">
+      <div class="form-group my-2">
+        <label for="title" class="form-label">Task Title</label>
+        <input
+          id="title"
+          formControlName="title"
+          type="text"
+          class="form-control"
+          placeholder="Edit task title"
+          required
+        />
+      </div>
+      <div class="form-group my-2">
+        <label for="description" class="form-label">Description</label>
+        <textarea
+          id="description"
+          formControlName="description"
+          class="form-control"
+          placeholder="Edit task description"
+        ></textarea>
+      </div>
+      <div class="form-group my-2">
+        <label for="assigneeSearch" class="form-label">Search Assignee</label>
+        <input
+          id="assigneeSearch"
+          type="text"
+          class="form-control"
+          formControlName="assigneeSearch"
+          placeholder="Search users..."
+          (input)="filterUsers($event)"
+        />
+      </div>
+      <ul *ngIf="filteredUsers.length > 0">
+        <li
+          *ngFor="let user of filteredUsers | slice : 0 : 3"
+          (click)="selectAssignee(user)"
+          class="list-group-item list-group-item-action"
+        >
+          {{ user.name }}
+        </li>
+      </ul>
+      <div *ngIf="selectedAssignee" class="my-2">
+        <p><strong>Selected Assignee:</strong> {{ selectedAssignee.name }}</p>
+      </div>
+      <div class="form-group my-2">
+        <label for="deadline" class="form-label">Deadline</label>
+        <input
+          type="date"
+          id="deadline"
+          formControlName="deadline"
+          class="form-control"
+        />
+      </div>
+      <button
+        type="submit"
+        class="btn btn-primary my-2"
+        [disabled]="editTaskForm.invalid"
+      >
+        Save Changes
+      </button>
+    </div>
+  </form>
+</div>

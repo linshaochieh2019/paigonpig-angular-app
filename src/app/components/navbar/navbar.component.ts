@@ -10,6 +10,7 @@ import { Observable } from 'rxjs';
 })
 export class NavbarComponent implements OnInit {
   isLoggedIn: boolean = false;
+  isAdmin: boolean = false;
   userName: string | null = null;
 
   constructor(private authService: AuthService) {}
@@ -19,7 +20,9 @@ export class NavbarComponent implements OnInit {
     this.authService.getCurrentUser().subscribe(user => {
       if (user) {
         this.isLoggedIn = true;
-        this.userName = user.displayName || user.email; // Get user's name or email
+        this.userName = user.displayName || user.email;
+        // Check if the user is an admin
+        this.isAdmin = user.role === 'admin';
       } else {
         this.isLoggedIn = false;
         this.userName = null;

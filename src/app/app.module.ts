@@ -14,6 +14,7 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 import { LogoutComponent } from './components/auth/logout/logout.component';
 import { AssignTaskComponent } from './components/tasks/assign-task/assign-task.component';
 import { EditTaskComponent } from './components/tasks/edit-task/edit-task.component';
+import { TaskComponent } from './components/tasks/task/task.component';
 
 // For Firebase modules
 import { environment } from '../environments/environment';
@@ -28,6 +29,8 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'logout', component: LogoutComponent },
   { path: 'tasks', component: TasksComponent },
+  { path: 'assign-task', component: AssignTaskComponent },
+  { path: 'edit-task/:id', component: EditTaskComponent },
   { path: '', redirectTo: '/login', pathMatch: 'full' }
 ];
 
@@ -42,7 +45,8 @@ const routes: Routes = [
     NavbarComponent,
     LogoutComponent,
     AssignTaskComponent,
-    EditTaskComponent
+    EditTaskComponent,
+    TaskComponent
   ],
   imports: [
     BrowserModule,
