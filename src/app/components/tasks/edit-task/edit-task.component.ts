@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
 import { UserService } from '../../../services/user/user.service';
 import { AuthService } from '../../../services/auth/auth.service';
-import { TasksService, Task } from '../../../services/tasks/tasks.service';
-import { update } from 'firebase/database';
+import { TasksService } from '../../../services/tasks/tasks.service';
+import { Task } from '../../../interfaces/task.interfece';
 
 @Component({
   selector: 'app-edit-task',
@@ -85,12 +84,15 @@ export class EditTaskComponent implements OnInit {
       // Convert datetime to string before storing
       let deadlineDate = new Date(this.editTaskForm.value.deadline).toISOString();
 
+
       const updatedTask: Task = {
         ...this.existingTask,
         title: this.editTaskForm.value.title,
         description: this.editTaskForm.value.description,
         deadline: deadlineDate,            
-        assignee: this.selectedAssignee.id
+        assignee: this.selectedAssignee.id,
+        assigneeName: this.selectedAssignee.name,
+        updatedTime: new Date().toISOString(),
       };
       this.tasksService.updateTask(this.task?.id!, updatedTask).then(() => {
         this.taskUpdated.emit(updatedTask); 

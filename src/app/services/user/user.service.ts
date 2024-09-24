@@ -24,4 +24,19 @@ export class UserService {
         )
       );
   }
+
+  // Fetch user by ID
+  getUserById(userId: string): Observable<any> {
+    return this.firestore
+      .collection('users')
+      .doc(userId)
+      .snapshotChanges()
+      .pipe(
+        map((action) => {
+          const data = action.payload.data();
+          const id = action.payload.id;
+          return { id: id, ...(data || {}) };
+        })
+      );
+  }
 }

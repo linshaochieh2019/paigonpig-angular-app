@@ -1,8 +1,9 @@
 // task.component.ts
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { Task } from '../../../services/tasks/tasks.service';
+import { Task } from '../../../interfaces/task.interfece';
 import { TasksService } from '../../../services/tasks/tasks.service';
 import { AuthService } from '../../../services/auth/auth.service';
+import { UserService } from '../../../services/user/user.service';
 
 @Component({
   selector: 'app-task',
@@ -33,9 +34,25 @@ export class TaskComponent implements OnInit {
 
   // Mark the task as completed
   markAsComplete() {
-    if (this.task && !this.task.completed && confirm('Are you sure you completed task?')) {
+    if (
+      this.task &&
+      !this.task.completed &&
+      confirm('Are you sure you completed task?')
+    ) {
       this.task.completed = true;
       this.tasksService.updateTask(this.task.id!, { completed: true });
+    }
+  }
+
+  // Reopen the task
+  reopenTask() {
+    if (
+      this.task &&
+      this.task.completed &&
+      confirm('Are you sure you want to reopen this task?')
+    ) {
+      this.task.completed = false;
+      this.tasksService.updateTask(this.task.id!, { completed: false });
     }
   }
 

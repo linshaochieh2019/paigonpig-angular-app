@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../../services/auth/auth.service';
 import { UserService } from '../../../services/user/user.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { TasksService, Task } from '../../../services/tasks/tasks.service';
+import { TasksService } from '../../../services/tasks/tasks.service';
+import { Task } from '../../../interfaces/task.interfece';
 import { Router } from '@angular/router';
 
 @Component({
@@ -86,6 +87,7 @@ export class AssignTaskComponent implements OnInit {
     this.newTask.title = this.assignTaskForm.value.title;
     this.newTask.description = this.assignTaskForm.value.description;
     this.newTask.assignee = this.selectedAssignee.id;
+    this.newTask.assigneeName = this.selectedAssignee.name;
     this.newTask.assignedBy = this.currentUserId!;
 
     // new Date() but convert to string to storing

@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { Observable, of, switchMap } from 'rxjs';
+import { Observable, of, switchMap, map } from 'rxjs';
+import { User } from '../../interfaces/user.interface';
 import firebase from 'firebase/compat/app';
 
 @Injectable({
@@ -82,5 +83,19 @@ export class AuthService {
   // Get current user
   getCurrentUser(): Observable<any> {
     return this.user$;
+  }
+
+  // Get user role
+  getUserRole(): Observable<string> {
+    return this.getCurrentUser().pipe(
+      switchMap(currentUser => {
+        if (currentUser) {
+          return this.firestore.doc(`users/${currentUser.id}`).valueChanges()
+            .pipe(map((user: any) => user?.role));
+        } else {
+          return of(null);
+        }
+      })
+    );
   }
 }

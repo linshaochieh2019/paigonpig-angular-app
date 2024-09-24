@@ -2,18 +2,10 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AngularFirestoreCollection } from '@angular/fire/compat/firestore';
-import { Observable } from 'rxjs';
+import { Observable, switchMap } from 'rxjs';
+import { AuthService } from '../auth/auth.service';
+import { Task } from '../../interfaces/task.interfece';
 
-export interface Task {
-  id?: string;
-  title: string;
-  description: string;
-  completed?: boolean;
-  assignedBy?: string;
-  assignee?: string;
-  createdTime?: string;
-  deadline?: string;
-}
 
 @Injectable({
   providedIn: 'root',
@@ -21,7 +13,10 @@ export interface Task {
 export class TasksService {
   private tasksCollection: AngularFirestoreCollection<Task>;
 
-  constructor(private firestore: AngularFirestore) {
+  constructor(
+    private firestore: AngularFirestore,
+    private authService: AuthService
+  ) {
     this.tasksCollection = this.firestore.collection<Task>('tasks');
   }
 
@@ -31,9 +26,26 @@ export class TasksService {
     return this.tasksCollection.doc(id).set({ ...task, id });
   }
 
-  // Get all tasks
+  // Check the user's role before retrieving tasks
   getTasks(): Observable<Task[]> {
-    return this.tasksCollection.valueChanges({ idField: 'id' });
+    return this.authService.getUserRole().pipe(
+      switchMap((role) => {
+        if (role === 'admin') {
+          // If the user is an admin, return all tasks
+          return this.tasksCollection.valueChanges({ idField: 'id' });
+        } else {
+          // If the user is not an admin, only return tasks assigned to them
+          return this.authService.getCurrentUser().pipe(
+            switchMap((user) => {
+              const currentUserId = user?.id;
+              return this.firestore.collection<Task>('tasks', ref =>
+                ref.where('assignee', '==', currentUserId)
+              ).valueChanges({ idField: 'id' });
+            })
+          );
+        }
+      })
+    );
   }
 
   // Get a task by ID

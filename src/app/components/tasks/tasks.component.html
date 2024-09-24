@@ -1,17 +1,38 @@
 <div class="container mt-5">
   <h2>Task List</h2>
+
   <div class="row">
     <!-- Left Column: Task List -->
     <div class="col-md-5">
+      
+      <!-- Searchbox -->
+      <input
+        type="text"
+        class="form-control mb-3"
+        placeholder="Search tasks..."
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearchChange($event)"
+      />
+
       <ul class="list-group">
         <li
-          *ngFor="let task of tasks"
+          *ngFor="let task of filteredTasks"
           class="list-group-item d-flex justify-content-between align-items-center"
           (click)="selectTask(task)"
           [class.active]="task === selectedTask"
+          [class.completed]="task.completed"
         >
+          <!-- Task title on the left -->
           <div>
             {{ task.title }}
+          </div>
+
+          <!-- Badges for deadline and assignee on the right -->
+          <div>
+            <span class="badge bg-primary me-1">{{ task.assigneeName }}</span>
+            <span class="badge bg-dark">{{
+              task.deadline | date : "shortDate" | slice : 0 : -3
+            }}</span>
           </div>
         </li>
       </ul>
