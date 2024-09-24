@@ -4,7 +4,6 @@
   <div class="row">
     <!-- Left Column: Task List -->
     <div class="col-md-5">
-      
       <!-- Searchbox -->
       <input
         type="text"
@@ -13,6 +12,41 @@
         [(ngModel)]="searchTerm"
         (ngModelChange)="onSearchChange($event)"
       />
+
+      <div class="mb-3">
+        <button
+          type="button"
+          class="btn btn-outline-secondary btn-sm me-2"
+          (click)="setDisplayOption('all')"
+          [class.active]="displayOption === 'all'"
+        >
+          All
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline-secondary btn-sm me-2"
+          (click)="setDisplayOption('incomplete')"
+          [class.active]="displayOption === 'incomplete'"
+        >
+          Incomplete
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline-secondary btn-sm me-2"
+          (click)="setDisplayOption('completed')"
+          [class.active]="displayOption === 'completed'"
+        >
+          Completed
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline-secondary btn-sm"
+          (click)="setDisplayOption('today')"
+          [class.active]="displayOption === 'today'"
+        >
+          Due Today
+        </button>
+      </div>
 
       <ul class="list-group">
         <li

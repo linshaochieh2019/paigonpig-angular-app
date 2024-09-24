@@ -6,7 +6,6 @@ import { RouterModule, Routes } from '@angular/router';
 
 // App Components
 import { AppComponent } from './app.component'; 
-import { TestComponent } from './components/test/test.component';
 import { LoginComponent } from './components/auth/login/login.component';
 import { SignupComponent } from './components/auth/signup/signup.component';
 import { TasksComponent } from './components/tasks/tasks.component';
@@ -38,7 +37,6 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     AppComponent,
-    TestComponent,
     LoginComponent,
     SignupComponent,
     TasksComponent,

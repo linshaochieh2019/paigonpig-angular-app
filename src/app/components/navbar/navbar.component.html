@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" routerLink="/">Paigonpig</a>
+  <a class="navbar-brand ms-4" routerLink="/">派工豬</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -18,16 +18,16 @@
     <!-- Right side: Display logged-in user's name or login options -->
     <ul class="navbar-nav ms-auto">
       <li class="nav-item" *ngIf="isLoggedIn">
-        <span class="navbar-text mr-3">Hello, {{ userName }}!</span>
+        <span class="navbar-text me-2">{{ userName }}</span>
       </li>
       <li class="nav-item" *ngIf="!isLoggedIn">
-        <a class="nav-link" routerLink="/login">Login</a>
+        <a class="nav-text no-style me-2" routerLink="/login">Login</a>
       </li>
       <li class="nav-item" *ngIf="!isLoggedIn">
-        <a class="nav-link" routerLink="/signup">Sign Up</a>
+        <a class="nav-text no-style me-2" routerLink="/signup">Sign Up</a>
       </li>
       <li class="nav-item" *ngIf="isLoggedIn">
-        <a class="nav-link" routerLink="/logout">Logout</a>
+        <a class="nav-text no-style me-2" routerLink="/logout">Logout</a>
       </li>
     </ul>
   </div>

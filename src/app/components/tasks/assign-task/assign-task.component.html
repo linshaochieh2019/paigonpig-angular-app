@@ -1,66 +1,71 @@
 <div class="container mt-5">
-  <form
-    [formGroup]="assignTaskForm"
-    (ngSubmit)="onSubmit()"
-    class="container m-1"
-  >
-    <div class="card-header">
-      <h2>Assign Task</h2>
-    </div>
-    <div class="card-body">
-      <div class="form-group my-2">
-        <label for="title" class="form-label">Title</label>
-        <input
-          formControlName="title"
-          type="text"
-          id="title"
-          name="title"
-          class="form-control"
-          placeholder="Task Title"
-          required
-        />
-      </div>
-      <div class="form-group my-2">
-        <label for="description" class="form-label">Description</label>
-        <textarea
-          formControlName="description"
-          id="description"
-          name="description"
-          class="form-control"
-          placeholder="Task Description"
-        ></textarea>
-      </div>
-      <div class="form-group my-2">
-        <label for="assigneeSearch" class="form-label">Assignee</label>
-        <input
-          id="assigneeSearch"
-          type="text"
-          class="form-control"
-          formControlName="assigneeSearch"
-          placeholder="Search users..."
-          (input)="filterUsers($event)"
-        />
-      </div>
-      <ul *ngIf="filteredUsers.length > 0">
-        <li
-          *ngFor="let user of filteredUsers | slice : 0 : 3"
-          (click)="selectAssignee(user)"
-        >
-          {{ user.name }}
-        </li>
-      </ul>
-      <div class="form-group my-2">
-        <label for="deadline" class="form-label">Deadline</label>
-        <input
-          formControlName="deadline"
-          type="date"
-          id="deadline"
-          name="deadline"
-          class="form-control"
-        />
-      </div>
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <form
+        [formGroup]="assignTaskForm"
+        (ngSubmit)="onSubmit()"
+        class="container m-1"
+      >
+        <div class="card-header">
+          <h2>Assign Task</h2>
+        </div>
+        <div class="card-body">
+          <div class="form-group my-2">
+            <label for="title" class="form-label">Title</label>
+            <input
+              formControlName="title"
+              type="text"
+              id="title"
+              name="title"
+              class="form-control"
+              placeholder="Task Title"
+              required
+            />
+          </div>
+          <div class="form-group my-2">
+            <label for="description" class="form-label">Description</label>
+            <textarea
+              formControlName="description"
+              id="description"
+              name="description"
+              class="form-control"
+              placeholder="Task Description"
+              rows="5"
+            ></textarea>
+          </div>
+          <div class="form-group my-2">
+            <label for="assigneeSearch" class="form-label">Assignee</label>
+            <input
+              id="assigneeSearch"
+              type="text"
+              class="form-control"
+              formControlName="assigneeSearch"
+              placeholder="Search users..."
+              (input)="filterUsers($event)"
+            />
+          </div>
+          <ul *ngIf="filteredUsers.length > 0">
+            <li
+              *ngFor="let user of filteredUsers | slice : 0 : 3"
+              (click)="selectAssignee(user)"
+            >
+              {{ user.name }}
+            </li>
+          </ul>
+          <div class="form-group my-2">
+            <label for="deadline" class="form-label">Deadline</label>
+            <input
+              formControlName="deadline"
+              type="date"
+              id="deadline"
+              name="deadline"
+              class="form-control"
+            />
+          </div>
 
-      <button type="submit" class="btn btn-primary my-2">Add Task</button>
+          <button type="submit" class="btn btn-primary my-2">Add Task</button>
+        </div>
+      </form>
     </div>
-  </form>
+  </div>
 </div>

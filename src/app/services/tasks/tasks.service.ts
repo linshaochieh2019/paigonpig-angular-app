@@ -6,7 +6,6 @@ import { Observable, switchMap } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { Task } from '../../interfaces/task.interfece';
 
-
 @Injectable({
   providedIn: 'root',
 })
@@ -30,19 +29,34 @@ export class TasksService {
   getTasks(): Observable<Task[]> {
     return this.authService.getUserRole().pipe(
       switchMap((role) => {
+        // Get current date and two days ago
+        const currentDate = new Date();
+        const twoDaysAgo = new Date();
+        twoDaysAgo.setDate(currentDate.getDate() - 2);
+
         if (role === 'admin') {
           // If the user is an admin, return all tasks
-          return this.tasksCollection.valueChanges({ idField: 'id' });
-        } else {
+          return this.firestore
+            .collection<Task>('tasks', (ref) =>
+              ref.where('deadline', '>=', twoDaysAgo.toISOString())
+            )
+            .valueChanges({ idField: 'id' });
+        } else if (role === 'user') {
           // If the user is not an admin, only return tasks assigned to them
           return this.authService.getCurrentUser().pipe(
             switchMap((user) => {
               const currentUserId = user?.id;
-              return this.firestore.collection<Task>('tasks', ref =>
-                ref.where('assignee', '==', currentUserId)
-              ).valueChanges({ idField: 'id' });
+              return this.firestore
+                .collection<Task>('tasks', (ref) =>
+                  ref.where('assignee', '==', currentUserId)
+                  .where('deadline', '>=', twoDaysAgo.toISOString())
+                )
+                .valueChanges({ idField: 'id' });
             })
           );
+        } else {
+          // Not showing any tasks if the user is not logged in
+          return [];
         }
       })
     );
