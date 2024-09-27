@@ -14,6 +14,8 @@ import { LogoutComponent } from './components/auth/logout/logout.component';
 import { AssignTaskComponent } from './components/tasks/assign-task/assign-task.component';
 import { EditTaskComponent } from './components/tasks/edit-task/edit-task.component';
 import { TaskComponent } from './components/tasks/task/task.component';
+import { UsersComponent } from './components/users/users.component';
+import { UserProfileComponent } from './components/user-profile/user-profile.component';
 
 // For Firebase modules
 import { environment } from '../environments/environment';
@@ -30,6 +32,8 @@ const routes: Routes = [
   { path: 'tasks', component: TasksComponent },
   { path: 'assign-task', component: AssignTaskComponent },
   { path: 'edit-task/:id', component: EditTaskComponent },
+  { path: 'users', component: UsersComponent },
+  { path: 'profile', component: UserProfileComponent },
   { path: '', redirectTo: '/login', pathMatch: 'full' }
 ];
 
@@ -44,7 +48,9 @@ const routes: Routes = [
     LogoutComponent,
     AssignTaskComponent,
     EditTaskComponent,
-    TaskComponent
+    TaskComponent,
+    UsersComponent,
+    UserProfileComponent
   ],
   imports: [
     BrowserModule,

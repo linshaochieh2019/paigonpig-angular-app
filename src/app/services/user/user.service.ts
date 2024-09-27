@@ -39,4 +39,12 @@ export class UserService {
         })
       );
   }
+
+  // Update user by ID
+  updateUser(userId: string, user: any): Promise<void> {
+    return this.firestore
+      .collection('users')
+      .doc(userId)
+      .update(user);
+  }  
 }

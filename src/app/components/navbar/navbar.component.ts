@@ -25,6 +25,7 @@ export class NavbarComponent implements OnInit {
       } else {
         this.isLoggedIn = false;
         this.userName = null;
+        this.isAdmin = false;
       }
     });
   }

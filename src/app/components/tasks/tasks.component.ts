@@ -106,6 +106,7 @@ export class TasksComponent implements OnInit {
   setDisplayOption(option: 'all' | 'completed' | 'incomplete' | 'today') {
     this.displayOption = option;
     this.applyFilters();
+    this.selectedTask = null;
   }
 
   // Apply both the search filter and the display option (completed/incomplete)
