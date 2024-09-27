@@ -12,6 +12,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 })
 export class UserProfileComponent implements OnInit {
   user: any = null; // Stores user data
+  organization: any = null; // Stores organization data
   editMode = false; // Flag to toggle edit mode
   profileForm: FormGroup; // Form for editing user profile
 

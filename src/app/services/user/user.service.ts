@@ -9,17 +9,19 @@ import { map } from 'rxjs/operators';
 export class UserService {
   constructor(private firestore: AngularFirestore) {}
 
-  // Fetch users whose role is 'user'
-  getUsers(): Observable<any[]> {
+  // Fetch users whose role is 'user' and belong to a specific organization
+  getUsersByOrg(orgId: string): Observable<any[]> {
     return this.firestore
-      .collection('users', (ref) => ref.where('role', '==', 'user'))
+      .collection('users', (ref) =>
+        ref.where('role', '==', 'user').where('orgId', '==', orgId)
+      )
       .snapshotChanges()
       .pipe(
         map((actions) =>
           actions.map((a) => {
             const data = a.payload.doc.data();
             const id = a.payload.doc.id;
-            return { id: id, ...(data || {}) };
+            return { id, ...(typeof data === 'object' ? data : {}) };
           })
         )
       );
@@ -42,9 +44,6 @@ export class UserService {
 
   // Update user by ID
   updateUser(userId: string, user: any): Promise<void> {
-    return this.firestore
-      .collection('users')
-      .doc(userId)
-      .update(user);
-  }  
+    return this.firestore.collection('users').doc(userId).update(user);
+  }
 }

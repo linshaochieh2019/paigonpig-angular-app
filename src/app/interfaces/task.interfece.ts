@@ -9,5 +9,6 @@ export interface Task {
     createdTime?: string;
     updatedTime?: string;
     deadline?: string;
+    orgId?: string;
 }
   

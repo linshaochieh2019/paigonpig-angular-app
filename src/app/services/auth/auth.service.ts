@@ -31,7 +31,7 @@ export class AuthService {
     );
   }
 
-  async signUp(email: string, password: string) {
+  async signUp(email: string, password: string, orgId: string) {
     const userCredential = await this.afAuth.createUserWithEmailAndPassword(
       email,
       password
@@ -43,10 +43,14 @@ export class AuthService {
         id: userCredential.user.uid,
         email: email,
         role: 'user',
+        orgId: orgId,
       };
 
       // Add the user to Firestore directly
       await this.firestore.collection('users').doc(user.id).set(user);
+
+      // Route to profile page
+      this.router.navigate(['/profile']);
 
       return userCredential;
     } else {

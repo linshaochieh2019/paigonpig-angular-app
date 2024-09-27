@@ -17,6 +17,7 @@ export class EditTaskComponent implements OnInit {
   @Output() taskUpdated = new EventEmitter<Task>(); // Emit the updated task
 
   currentUserId: string | null = null;
+  currentUser: any;
   users: any[] = [];
   filteredUsers: any[] = [];
   selectedAssignee: any | null = null;
@@ -41,13 +42,16 @@ export class EditTaskComponent implements OnInit {
     // Get current user ID
     this.authService.getCurrentUser().subscribe((user) => {
       this.currentUserId = user?.id;
-    });
+      this.currentUser = user;
 
-    // Fetch users for assignee search
-    this.userService.getUsers().subscribe((users) => {
-      this.users = users;
-      const user = this.users.find((user) => user.id === this.task?.assignee);
-      this.selectedAssignee = user || null;
+      // Fetch users for assignee search
+      if (this.currentUser && this.currentUser.orgId) {
+        this.userService.getUsersByOrg(this.currentUser.orgId).subscribe((users) => {
+          this.users = users;
+          const user = this.users.find((user) => user.id === this.task?.assignee);
+          this.selectedAssignee = user || null;    
+        });
+      }
     });
 
     // If you have a task input, patch the form with its values

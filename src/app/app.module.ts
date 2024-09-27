@@ -16,6 +16,7 @@ import { EditTaskComponent } from './components/tasks/edit-task/edit-task.compon
 import { TaskComponent } from './components/tasks/task/task.component';
 import { UsersComponent } from './components/users/users.component';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
+import { OrganizationComponent } from './components/organization/organization.component';
 
 // For Firebase modules
 import { environment } from '../environments/environment';
@@ -34,6 +35,7 @@ const routes: Routes = [
   { path: 'edit-task/:id', component: EditTaskComponent },
   { path: 'users', component: UsersComponent },
   { path: 'profile', component: UserProfileComponent },
+  { path: 'organization', component: OrganizationComponent },
   { path: '', redirectTo: '/login', pathMatch: 'full' }
 ];
 
@@ -50,7 +52,8 @@ const routes: Routes = [
     EditTaskComponent,
     TaskComponent,
     UsersComponent,
-    UserProfileComponent
+    UserProfileComponent,
+    OrganizationComponent
   ],
   imports: [
     BrowserModule,

@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AngularFirestoreCollection } from '@angular/fire/compat/firestore';
-import { Observable, switchMap } from 'rxjs';
+import { Observable, switchMap, of } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { Task } from '../../interfaces/task.interfece';
 
@@ -25,39 +25,86 @@ export class TasksService {
     return this.tasksCollection.doc(id).set({ ...task, id });
   }
 
-  // Check the user's role before retrieving tasks
-  getTasks(): Observable<Task[]> {
-    return this.authService.getUserRole().pipe(
-      switchMap((role) => {
-        // Get current date and two days ago
+  // // Check the user's role before retrieving tasks
+  // getTasks(): Observable<Task[]> {
+  //   return this.authService.getUserRole().pipe(
+  //     switchMap((role) => {
+  //       // Get current date and two days ago
+  //       const currentDate = new Date();
+  //       const twoDaysAgo = new Date();
+  //       twoDaysAgo.setDate(currentDate.getDate() - 2);
+
+  //       if (role === 'admin') {
+  //         // If the user is an admin, return all tasks
+  //         return this.firestore
+  //           .collection<Task>('tasks', (ref) =>
+  //             ref.where('deadline', '>=', twoDaysAgo.toISOString())
+  //           )
+  //           .valueChanges({ idField: 'id' });
+  //       } else if (role === 'user') {
+  //         // If the user is not an admin, only return tasks assigned to them
+  //         return this.authService.getCurrentUser().pipe(
+  //           switchMap((user) => {
+  //             const currentUserId = user?.id;
+  //             return this.firestore
+  //               .collection<Task>('tasks', (ref) =>
+  //                 ref
+  //                   .where('assignee', '==', currentUserId)
+  //                   .where('deadline', '>=', twoDaysAgo.toISOString())
+  //               )
+  //               .valueChanges({ idField: 'id' });
+  //           })
+  //         );
+  //       } else {
+  //         // Not showing any tasks if the user is not logged in
+  //         return [];
+  //       }
+  //     })
+  //   );
+  // }
+
+  //
+  getTasksByOrgId(): Observable<Task[]> {
+    return this.authService.getCurrentUser().pipe(
+      switchMap((user) => {
+        if (!user) {
+          // If no user is logged in, return an empty array
+          return of([]);
+        }
+
+        const currentUserId = user.id;
+        const userOrgId = user.orgId; // Assuming orgId is a property of the user
         const currentDate = new Date();
         const twoDaysAgo = new Date();
         twoDaysAgo.setDate(currentDate.getDate() - 2);
 
-        if (role === 'admin') {
-          // If the user is an admin, return all tasks
-          return this.firestore
-            .collection<Task>('tasks', (ref) =>
-              ref.where('deadline', '>=', twoDaysAgo.toISOString())
-            )
-            .valueChanges({ idField: 'id' });
-        } else if (role === 'user') {
-          // If the user is not an admin, only return tasks assigned to them
-          return this.authService.getCurrentUser().pipe(
-            switchMap((user) => {
-              const currentUserId = user?.id;
+        return this.authService.getUserRole().pipe(
+          switchMap((role) => {
+            if (role === 'admin') {
+              // If the user is an admin, return all tasks in their organization
               return this.firestore
                 .collection<Task>('tasks', (ref) =>
-                  ref.where('assignee', '==', currentUserId)
-                  .where('deadline', '>=', twoDaysAgo.toISOString())
+                  ref
+                    .where('orgId', '==', userOrgId)
+                    .where('deadline', '>=', twoDaysAgo.toISOString())
                 )
                 .valueChanges({ idField: 'id' });
-            })
-          );
-        } else {
-          // Not showing any tasks if the user is not logged in
-          return [];
-        }
+            } else if (role === 'user') {
+              // If the user is not an admin, return only tasks assigned to them in their organization
+              return this.firestore
+                .collection<Task>('tasks', (ref) =>
+                  ref
+                    .where('orgId', '==', userOrgId)
+                    .where('assignee', '==', currentUserId)
+                    .where('deadline', '>=', twoDaysAgo.toISOString())
+                )
+                .valueChanges({ idField: 'id' });
+            } else {
+              // Return an empty array if the user role is not recognized
+              return of([]);
+            }
+          })
+        );
       })
     );
   }

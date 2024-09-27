@@ -9,10 +9,12 @@ import { AuthService } from '../../../services/auth/auth.service';
 export class SignupComponent {
   email: string = '';
   password: string = '';
+  orgId: string = '';
+
 
   constructor(private authService: AuthService) {}
 
   async onSubmit() {
-    await this.authService.signUp(this.email, this.password);
+    await this.authService.signUp(this.email, this.password, this.orgId);
   }
 }

@@ -10,7 +10,7 @@ import { AuthService } from '../../services/auth/auth.service';
   styleUrls: ['./tasks.component.scss'],
 })
 export class TasksComponent implements OnInit {
-  isAdmin: boolean = false;
+  currentUser: any;
   tasks: Task[] = [];
   selectedTask: Task | null = null;
   isEditingTask: boolean = false;
@@ -24,12 +24,11 @@ export class TasksComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Check if the user is an admin
     this.authService.getCurrentUser().subscribe((user) => {
-      if (user && user.role === 'admin') {
-        this.isAdmin = true;
+      if (user) {
+        this.currentUser = user;
       } else {
-        this.isAdmin = false;
+        this.currentUser = null;
       }
     });
     this.loadTasks();
@@ -37,7 +36,7 @@ export class TasksComponent implements OnInit {
 
   // Load tasks from Firestore
   loadTasks(): void {
-    this.tasksService.getTasks().subscribe((tasks) => {
+    this.tasksService.getTasksByOrgId().subscribe((tasks) => {
       this.tasks = this.sortTasksByDeadline(tasks);
       this.filteredTasks = this.tasks;
     });

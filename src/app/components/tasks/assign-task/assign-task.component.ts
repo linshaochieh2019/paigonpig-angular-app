@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
 })
 export class AssignTaskComponent implements OnInit {
   currentUserId: string | null = null; // To store the current user's ID
+  currentUser: any; // To store the current user's data
   users: any[] = []; // To store the list of users
   filteredUsers: any[] = []; // Filtered list based on search input
   selectedAssignee: any | null = null; // Store the selected user
@@ -38,14 +39,17 @@ export class AssignTaskComponent implements OnInit {
     // Get the current user's ID
     this.authService.getCurrentUser().subscribe((user) => {
       this.currentUserId = user?.id;
-    });
+      this.currentUser = user;
 
-    // Fetch users from th`e service
-    this.userService.getUsers().subscribe((users) => {
-      this.users = users;
+      // Fetch users from the service after the current user is available
+      if (this.currentUser && this.currentUser.orgId) { 
+        this.userService.getUsersByOrg(this.currentUser.orgId).subscribe((users) => {
+          this.users = users;
+        });
+      }
     });
   }
-
+  
   // Filter users based on the search input
   filterUsers(event: Event): void {
     const searchTerm = (event.target as HTMLInputElement).value.toLowerCase();
@@ -89,6 +93,7 @@ export class AssignTaskComponent implements OnInit {
     this.newTask.assignee = this.selectedAssignee.id;
     this.newTask.assigneeName = this.selectedAssignee.name;
     this.newTask.assignedBy = this.currentUserId!;
+    this.newTask.orgId = this.currentUser.orgId;
 
     // new Date() but convert to string to storing
     let currentDate = new Date();
