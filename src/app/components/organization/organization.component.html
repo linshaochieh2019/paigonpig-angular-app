@@ -1,0 +1,11 @@
+<div class="container" *ngIf="currentOrganization">
+  <div class="card mt-4">
+    <div class="card-header">
+      <h3>Organization</h3>
+    </div>
+    <div class="card-body">
+      <p><strong>ID:</strong> {{ currentOrganization.id }}</p>
+      <p><strong>Name:</strong> {{ currentOrganization.name }}</p>
+    </div>
+  </div>
+</div>
