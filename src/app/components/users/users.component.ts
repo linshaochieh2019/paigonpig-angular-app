@@ -33,7 +33,6 @@ export class UsersComponent implements OnInit {
     this.authService.getCurrentUser().subscribe((user) => {
       if (user) {
         this.currentUser = user;
-        console.log(this.currentUser);
         this.loadUsers();
       } else {
         this.currentUser = null;

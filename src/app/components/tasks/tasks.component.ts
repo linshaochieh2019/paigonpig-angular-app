@@ -89,7 +89,6 @@ export class TasksComponent implements OnInit {
     }
 
     const lowerCaseTerm = searchTerm.toLowerCase();
-    console.log(lowerCaseTerm);
 
     return this.tasks.filter(
       (task) =>
